@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Home
+{% endblock %}
+{% block content %}
+    <div class="text-center">
+    <br>
+    <h1 class="text-center product_title">
+        Order history
+    </h1>
+    <br>
+    {% if order_details %}
+        <table class="table table-strtipped">
+            <thead>
+            <tr>
+                <th>Order number</th>
+                <th>Order date</th>
+                <th>Total amount</th>
+                <th>status</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for order in order_details %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.created}}</td>
+                    <td>{{ order.total }}</td>
+                    <td><i class="fas fa-check">&nbsp;Complete</i></td>
+                    <td><a href="{% url 'order_detail' order.id %}">View Order</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+    <p> You have not placed any orders yet.</p>
+    <br><br>
+    <a class="btn btn-secondary" href="{% url 'home' %}">Continue shopping</a>
+    </div>
+    {% endif %}
+    <br>
+    <br>
+{% endblock %}
