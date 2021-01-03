@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'store',
     'stripe',
     'crispy_forms',
+    'widget_tweaks'
 ]
 
 MIDDLEWARE = [
@@ -129,3 +130,9 @@ STRIPE_PUBLISGABLE_KEY ="pk_test_51I0XD9Kt8BgycAvXcDkQFPLmRziDTEvTYPZqhzSMgo012o
 STRIPE_SECRET_KEY = "sk_test_51I0XD9Kt8BgycAvXamkpYNUZc2fAsczp0izSmwfSJ5zKEy3qzpGsRlP0QWtoWCQ5Liqv8U1K0WqfAMRp0F7cHhLd00Fd8dE4Y7"
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+EMAIL_HOST = 'smtp.eu.mailgun.org'
+EMAIL_PORT = '587'
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'postmaster@mail.nesan.pl'
+EMAIL_HOST_PASSWORD = '3cbcad6f196241edbe96ec20ac0a7ec9-c50a0e68-1ccc5f7c'

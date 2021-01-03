@@ -1,13 +1,15 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Category, Product, Cart, CartItem, Order, OrderItem
+from .models import Category, Product, Cart, CartItem, Order, OrderItem, Review
 import stripe
 from django.conf import settings
 from django.contrib.auth.models import Group, User
-from .forms import SignUpForm
+from .forms import SignUpForm, ContactForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from django.template.loader import get_template
+from django.core.mail import EmailMessage
 
 
 def home(request, category_slug=None):
@@ -26,7 +28,13 @@ def productPage(request, category_slug, product_slug):
         product = Product.objects.get(category__slug=category_slug, slug=product_slug)
     except Exception as e:
         raise e
-    return render(request, 'product.html', {'product': product})
+
+    if request.method == "POST" and request.user.is_authenticated and request.POST['content'].strip() != '':
+        Review.objects.create(product=product, user=request.user,content=request.POST['content'])
+
+    reviews = Review.objects.filter(product=product)
+
+    return render(request, 'product.html', {'product': product, 'reviews': reviews})
 
 
 def search(request):
@@ -133,6 +141,11 @@ def cart_detail(request, total=0, counter=0, cart_items=None):
                     order_item.delete()
 
                     print('order has been created')
+                try:
+                    sendEmail(order_details.id)
+                    print('Order email has been send')
+                except IOError as e:
+                    return e
 
                 return redirect('thanks_page', order_details.id)
             except ObjectDoesNotExist:
@@ -214,6 +227,7 @@ def orderHistory(request):
         order_details = Order.objects.filter(emailAddress=email)
         return render(request, 'order_list.html', {'order_details': order_details})
 
+
 @login_required(redirect_field_name='next', login_url='signin')
 def viewOrder(request, order_id):
     if request.user.is_authenticated:
@@ -221,3 +235,41 @@ def viewOrder(request, order_id):
         order = Order.objects.get(id=order_id, emailAddress=email)
         order_items = OrderItem.objects.filter(order=order)
         return render(request, 'order_detail.html', {'order': order, 'order_items': order_items})
+
+
+def sendEmail(order_id):
+    transaction = Order.objects.get(id=order_id)
+    order_items = OrderItem.objects.filter(order=transaction)
+
+    try:
+        subject = "Store - new order #{}".format(transaction.id)
+        to = ['{}'.format(transaction.emailAddress)]
+        from_email = "orders@nesan.pl"
+        order_information = {
+            'transaction': transaction,
+            'order_items': order_items
+        }
+        message = get_template('email/email.html').render(order_information)
+        msg = EmailMessage(subject, message, to=to, from_email=from_email)
+        msg.content_subtype = 'html'
+        msg.send()
+    except IOError as e:
+        return e
+
+
+def contactView(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            subject = form.cleaned_data.get('subject')
+            from_email = form.cleaned_data.get('from_email')
+            message = form.cleaned_data.get('message')
+            name = form.cleaned_data.get('name')
+
+            message_format = "{0} Has sent you a new message: \n\n{1}".format(name, message)
+            msg = EmailMessage(subject, message_format, to=['contact@nesan.pl'], from_email=from_email)
+            msg.send()
+            return render(request,'contact_success.html')
+    else:
+        form = ContactForm()
+    return render(request, 'contact.html', {'form': form})

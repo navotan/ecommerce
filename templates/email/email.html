@@ -1,0 +1,67 @@
+<html lang="PL">
+<body>
+    <center>
+
+        <h1 >
+            Order details
+        </h1>
+        <br>
+        <table >
+            <tr>
+                <td  valign="top" colspan="2" style="width: 50%">
+                    <b>Order:</b> #{{ order.id }}<br>
+                    <b>Date</b>{{ order.created }}<br>
+                    <b>Order Total:</b>${{ order.total }}<br>
+                    <b>Order Status:</b><i class="fas fa-check"></i>Complete.
+                </td>
+                <td  colspan="2" valign="top" style="width: 50%">
+                    <b>Billing Address:</b><br>
+                    {{ transaction.billingName }}<br>
+                    {{ transaction.billingAddress1 }}<br>
+                    {{ transaction.billingCity }}<br>
+                    {{ transaction.billingPostcode }}<br>
+                    {{ transaction.billingCountry }}<br>
+                </td>
+            </tr>
+            <tr>
+                <td><b>Product Descritpion</b></td>
+                <td><b>Qty</b></td>
+                <td><b>Unit price</b></td>
+                <td><b>Sub-total</b></td>
+            </tr>
+            {% for item in order_items %}
+                <tr>
+                <td>{{ item.product }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.price }}</td>
+                <td>{{ item.sub_total }}</td>
+                </tr>
+            {% endfor %}
+        <tr>
+            <td  colspan="3"  style="text-align: right"><b>Total</b></td>
+            <td>${{ transaction.total }}</td>
+        </tr>
+        <tr>
+            <td colspan="3"  style="text-align: right"><b>Total paid</b></td>
+            <td>${{ transaction.total }}</td>
+        </tr>
+        <tr>
+            <td  valign="top" style="width: 50%;" colspan="2">
+            <b>Shipping address</b><br>
+            {{ transaction.shippingName }}<br>
+            {{ transaction.shippingAddress1}}<br>
+            {{ transaction.shippingCity }}<br>
+            {{ transaction.shippingPostcode }}<br>
+            {{ transaction.shippingCountry }}<br>
+            </td>
+            <td valign="top" style="width: 50%;" colspan="2" >
+            <b>Payment details</b><br>
+            Order {{ transaction.id }} has beeen paid succesfully
+            </td>
+        </tr>
+        </table>
+        <br><br>
+    </center>
+</body>
+
+</html>
