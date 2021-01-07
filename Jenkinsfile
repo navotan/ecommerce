@@ -70,14 +70,14 @@ pipeline {
                 milestone(1)
                 withCredentials([usernamePassword(credentialsId: 's3', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')]) {
                     script {
-                        sh "sshpasss -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod1_ip \"docker pull nesax/ecommerce:${env.BUILD_NUMBER}\""
+                        sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod1_ip \"docker pull nesax/ecommerce:${env.BUILD_NUMBER}\""
                         try{
-                            sh "sshpasss -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod1_ip \"docker stop ecommerce\""
-                            sh "sshpasss -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod1_ip \"docker rm ecommerce\""
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod1_ip \"docker stop ecommerce\""
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod1_ip \"docker rm ecommerce\""
                         } catch (err) {
                             echo 'caught error: $err'
                         }
-                            sh "sshpasss -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod1_ip \"docker run --restart always --name ecommerce -p 8888:8888 -d nesax/ecommerce:${env.BUILD_NUMBER}\""
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod1_ip \"docker run --restart always --name ecommerce -p 8888:8888 -d nesax/ecommerce:${env.BUILD_NUMBER}\""
                     }
                 }
             }
