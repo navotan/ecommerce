@@ -45,7 +45,6 @@ pipeline {
             steps {
                 script {
                     app = docker.build("nesax/ecommerce")
-                    }
                 }
             }
         }
