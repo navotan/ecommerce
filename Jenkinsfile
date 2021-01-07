@@ -5,7 +5,7 @@ pipeline {
             steps {
                 echo 'Running build automation!'
                 //sh './gradlew build --no-daemon'
-                archiveArtifacts artifacts: 'dist/trainSchedule.zip'
+                archiveArtifacts artifacts: 'dist/ecommerce.zip'
             }
         }
         stage('DeployToStaging') {
@@ -26,7 +26,7 @@ pipeline {
                                 ],
                                 transfers: [
                                     sshTransfer(
-                                        sourceFiles: 'dist/trainSchedule.zip',
+                                        sourceFiles: 'dist/ecommerce.zip',
                                         removePrefix: 'dist/',
                                         remoteDirectory: '/test',
                                         execCommand: 'tree'
@@ -58,7 +58,7 @@ pipeline {
                                 ],
                                 transfers: [
                                     sshTransfer(
-                                        sourceFiles: 'dist/trainSchedule.zip',
+                                        sourceFiles: 'dist/ecommerce.zip',
                                         removePrefix: 'dist/',
                                         remoteDirectory: '/test',
                                         execCommand:'tree'
