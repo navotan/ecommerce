@@ -38,50 +38,35 @@ pipeline {
                 }
             }
         }
-        stage('Build Docker Image') {
-            when {
-                branch 'master'
-            }
-            steps {
-                script {
-                    app = docker.build("nesax/ecommerce")
-                    app.inside{
-                        sh 'echo $(curl localhost:8080)'
-                    }
-                }
-            }
-        }
-        stage('Docker push image') {
-            when {
-                branch 'master'
-            }
-            steps {
-                script {
-                    app = docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login') {
-                        app.push("${env.BUILD_NUMBER}")
-                        app.push("latest")
-                    }
-                }
-            }
-        }
         stage('DeployToProduction') {
             when {
                 branch 'master'
             }
             steps {
-                input 'Deploy to Porduction?'
+                input 'Does the staging environment look OK??'
                 milestone(1)
                 withCredentials([usernamePassword(credentialsId: 's3', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')]) {
-                    script {
-                        sh "sshpasss -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod1_ip \"docker pull nesanx/ecommerce:${env.BUILD_NUMBER}\""
-                        try{
-                            sh "sshpasss -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod1_ip \"docker stop ecommerce\""
-                            sh "sshpasss -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod1_ip \"docker rm ecommerce\""
-                        } catch (err) {
-                            echo 'caught error: $err'
-                        }
-                            sh "sshpasss -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod1_ip \"docker run --restart always --name ecommerce -p 8888:8888 -d nesax/ecommerce"${env.BUILD_NUMBER}\""
-                    }
+                    sshPublisher(
+                        failOnError: true,
+                        continueOnError: false,
+                        publishers: [
+                            sshPublisherDesc(
+                                configName: 's3',
+                                sshCredentials: [
+                                    username: "$USERNAME",
+                                    encryptedPassphrase: "$USERPASS"
+                                ],
+                                transfers: [
+                                    sshTransfer(
+                                        sourceFiles: 'dist/ecommerce.zip',
+                                        removePrefix: 'dist/',
+                                        remoteDirectory: '/test',
+                                        execCommand:'tree'
+                                    )
+                                ]
+                            )
+                        ]
+                    )
                 }
             }
         }
