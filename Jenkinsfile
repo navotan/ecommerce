@@ -43,9 +43,9 @@ pipeline {
                 branch 'master'
             }
             steps {
-                script {
+                //script {
 //                    app = docker.build("nesax/ecommerce")
-                }
+                //}
             }
         }
         stage('Docker push image') {
@@ -53,12 +53,12 @@ pipeline {
                 branch 'master'
             }
             steps {
-                script {
+               // script {
     //                app = docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
   //                      app.push("${env.BUILD_NUMBER}")
   //                      app.push("latest")
       //              }
-                }
+                //}
             }
         }
         stage('DeployToProduction') {
