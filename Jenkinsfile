@@ -70,7 +70,7 @@ pipeline {
                 milestone(1)
                 withCredentials([usernamePassword(credentialsId: 's2', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')]) {
                     script {
-                        sh "sshpass -p '$USERPASS' -v  ssh -o StrictHostKeyChecking=no $USERNAME@$prod1_ip \"docker pull nesax/ecommerce:${env.BUILD_NUMBER}\""
+                        sh "sshpass -p '$USERPASS' -v  ssh -o StrictHostKeyChecking=no $USERNAME@$prod1_ip \"docker pull nesax/ecommerce:latest\""
                         try{
                             sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod1_ip \"docker stop ecommerce\""
                             sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod1_ip \"docker rm ecommerce\""
