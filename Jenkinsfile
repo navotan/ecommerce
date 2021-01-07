@@ -68,7 +68,7 @@ pipeline {
             steps {
                 input 'Deploy to Porduction?'
                 milestone(1)
-                withCredentials([usernamePassword(credentialsId: 's3', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')]) {
+                withCredentials([usernamePassword(credentialsId: 's2n', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')]) {
                     script {
                         sh "sshpass  ssh  $USERNAME@$prod1_ip \"docker pull nesax/ecommerce:${env.BUILD_NUMBER}\""
                         try{
