@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -19,3 +21,4 @@ urlpatterns = [
     path('order/<int:order_id>/', views.viewOrder, name='order_detail'),
     path('contact/', views.contactView, name='contact')
 ]
+urlpatterns += staticfiles_urlpatterns()
