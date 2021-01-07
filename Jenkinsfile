@@ -45,8 +45,6 @@ pipeline {
             steps {
                 script {
                     app = docker.build("nesax/ecommerce")
-                    app.inside{
-                        sh 'echo $(curl localhost:8080)'
                     }
                 }
             }
