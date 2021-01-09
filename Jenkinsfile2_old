@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    enviroment {
-	DOCKER_IMAGE_NAME='nesax/ecommerce'
-    }
     stages {
         stage('Build') {
             steps {
@@ -47,7 +44,7 @@ pipeline {
             }
             steps {
                 script {
-                    app = docker.build(DOCKER_IMAGE_NAME)
+                    app = docker.build("nesax/ecommerce")
                 }
             }
         }
@@ -71,11 +68,18 @@ pipeline {
             steps {
                 input 'Deploy to Porduction?'
                 milestone(1)
-		kubernetesDeploy(
-                    kubeconfigId: 'kubeconfig',
-                    configs: 'ecommerce-kube.yml',
-                    enableConfigSubstitution: true
-		)
+                withCredentials([usernamePassword(credentialsId: 's2', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')]) {
+                    script {
+                        sh "sshpass -p '$USERPASS' -v  ssh -o StrictHostKeyChecking=no $USERNAME@$prod1_ip \"docker pull nesax/ecommerce:${env.BUILD_NUMBER}\""
+                        try{
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod1_ip \"docker stop ecommerce\""
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod1_ip \"docker rm ecommerce\""
+                        } catch (err) {
+                            echo 'caught error: $err'
+                        }
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod1_ip \"docker run --restart always --name ecommerce -p 8888:8888 -d nesax/ecommerce:${env.BUILD_NUMBER}\""
+                    }
+                }
             }
         }
     }
