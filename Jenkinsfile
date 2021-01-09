@@ -3,7 +3,7 @@ pipeline {
     environment {
         DOCKER_IMAGE_NAME = "nesax/ecommerce"
     }
-#    stages {
+    stages {
 #        stage('Build') {
 #            steps {
 #                echo 'Running build automation!'
