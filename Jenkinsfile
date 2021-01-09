@@ -1,7 +1,7 @@
 pipeline {
     agent any
-    enviroment {
-	DOCKER_IMAGE_NAME='nesax/ecommerce'
+    environment {
+        DOCKER_IMAGE_NAME = "nesax/ecommerce"
     }
     stages {
         stage('Build') {
