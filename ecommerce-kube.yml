@@ -3,9 +3,8 @@ apiVersion: v1
 metadata:
   name: ecommerce-service
   annotations:
-    prometheus.io/scrape: 'true'
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: ecommerce
   ports:
