@@ -5,13 +5,13 @@ metadata:
   annotations:
     prometheus.io/scrape: 'true'
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: ecommerce
   ports:
     - protocol: TCP
       port: 8888
-      nodePort: 8889
+      nodePort: 8888
         ---
 apiVersion: apps/v1 
 kind: Deployment
