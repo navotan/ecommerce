@@ -73,7 +73,7 @@ pipeline {
                 milestone(1)
         		kubernetesDeploy(
                             kubeconfigId: 'kubeconfig',
-                            configs: 'ecommerce-kube.yml',
+                            configs: 'ecommerce-kube.yaml',
                             enableConfigSubstitution: true
         		)
             }

@@ -1,9 +1,9 @@
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
   name: ecommerce-service
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: ecommerce
   ports:
@@ -13,22 +13,24 @@ spec:
 
         ---
 
-apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ecommerce-deployment
+  labels:
+    app: ecommerce
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: ecommerce
-  replicas: 2 # tells deployment to run 2 pods matching the template
   template:
     metadata:
       labels:
         app: ecommerce
     spec:
       containers:
-      - name: ecommerce
-        image: $DOCKER_IMAGE_NAME:latest
-        ports:
-        - containerPort: 8888
+        - name: ecommerce
+          image: $DOCKER_IMAGE_NAME:latest
+          ports:
+            - containerPort: 8888 
