@@ -69,7 +69,6 @@ pipeline {
                 branch 'master'
             }
             steps {
-                input 'Deploy to Porduction?'
                 milestone(1)
         		kubernetesDeploy(
                             kubeconfigId: 'kubeconfig',
