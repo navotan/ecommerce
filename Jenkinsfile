@@ -69,7 +69,7 @@ pipeline {
                 branch 'master'
             }
             steps {
-                milestone(1)
+                milestone(3)
         		kubernetesDeploy(
                             kubeconfigId: 'kubeconfig',
                             configs: 'ecommerce-kube.yaml',
